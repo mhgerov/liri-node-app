@@ -12,13 +12,19 @@ const fs = require('fs');
 
 switch (process.argv[2]) {
 	case 'my-tweets':
+		var user;
+		client.get('account/settings', function (err,response) {
+			user = response.screen_name;
+		});
+		
 		console.log('These are your last 20 tweets:');
-		client.get('statuses/home_timeline', {count:20}, function (error, tweets, response) {
+		client.get('statuses/user_timeline', {screen_name:user,count:20}, function (error, tweets, response) {
 			if (error) {console.log(error)}
 			for (i in tweets) {
 				console.log(tweets[i].created_at+'\n'+tweets[i].text);
 			}
 		});
+		
 		break;
 	case 'spotify-this-song':
 		spotify.search({type: 'track',query: process.argv[3],limit:1}).then(function (data) {
